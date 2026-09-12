@@ -19,7 +19,7 @@ const Input = ({
 }: InputProps) => {
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-slate-800">
+      <label className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
         {label}
       </label>
 
@@ -27,11 +27,12 @@ const Input = ({
         type={type}
         placeholder={placeholder}
         {...registration}
-        className={`w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 ${className}`.trim()}
+        className={`w-full rounded-3xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 transition duration-200 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none focus:ring-4 focus:ring-sky-100 ${className}`.trim()}
+        aria-invalid={error ? "true" : "false"}
       />
 
       {error && (
-        <p className="text-sm text-red-500">
+        <p className="text-sm text-rose-600">
           {error}
         </p>
       )}
