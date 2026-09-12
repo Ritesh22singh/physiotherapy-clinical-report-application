@@ -1,5 +1,7 @@
 import { useState } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { registerSchema } from "../../validation/auth.schema";
@@ -13,6 +15,7 @@ import { registerUser } from "../../services/authService";
 import toast from "react-hot-toast";
 
 const Register = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -29,8 +32,13 @@ const Register = () => {
     try {
       const response = await registerUser(data);
       toast.success(response.message);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Something went wrong");
+      navigate("/login");
+    } catch (error: unknown) {
+      const message = axios.isAxiosError<{ message?: string }>(error)
+        ? error.response?.data?.message
+        : undefined;
+
+      toast.error(message || "Something went wrong");
       console.error(error);
     } finally {
       setISloading(false);
@@ -39,7 +47,7 @@ const Register = () => {
 
   return (
     <AuthLayout>
-      <div className="mx-auto w-full max-w-4xl">
+      <div className="w-full">
         <div className="mb-8 rounded-[32px] border border-slate-200/80 bg-slate-950/95 px-6 py-7 text-slate-50 shadow-[0_30px_90px_-45px_rgba(15,23,42,0.45)] ring-1 ring-white/10 sm:px-8 sm:py-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-3">
@@ -68,6 +76,7 @@ const Register = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5">
             <div className="grid gap-5 sm:grid-cols-2">
               <Input
+                id="name"
                 label="Full name"
                 placeholder="Enter your full name"
                 registration={register("name")}
@@ -75,6 +84,7 @@ const Register = () => {
               />
 
               <Input
+                id="email"
                 label="Email address"
                 type="email"
                 placeholder="Enter your email"
@@ -84,6 +94,7 @@ const Register = () => {
             </div>
 
             <Input
+              id="password"
               label="Password"
               type="password"
               placeholder="Create a secure password"
@@ -98,9 +109,9 @@ const Register = () => {
 
           <p className="mt-6 text-center text-sm text-slate-500">
             Already have an account?{' '}
-            <a href="/login" className="font-semibold text-slate-900 underline decoration-sky-500/30 hover:text-slate-700">
+            <Link to="/login" className="font-semibold text-slate-900 underline decoration-sky-500/30 hover:text-slate-700">
               Sign in
-            </a>
+            </Link>
           </p>
         </Card>
       </div>
