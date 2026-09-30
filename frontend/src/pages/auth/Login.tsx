@@ -12,6 +12,7 @@ import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import { loginUser } from "../../services/authService";
 import toast from "react-hot-toast";
+import { getLogoutMessage, startSession } from "../../services/session";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,12 +31,14 @@ const Login = () => {
     try {
       const response = await loginUser(data);
 
-      if (response.token) {
-        localStorage.setItem("auth_token", response.token);
-      }
+   if (!response.token) {
+  toast.error("Login failed: no token was returned");
+  return;
+}
 
-      toast.success(response.message);
-      navigate("/dashboard");
+startSession(response.token);
+toast.success(response.message);
+navigate("/dashboard");
     } catch (error: unknown) {
       const message = axios.isAxiosError<{ message?: string }>(error)
         ? error.response?.data?.message
@@ -59,6 +62,11 @@ const Login = () => {
           </p>
         </div>
 
+        {getLogoutMessage() && (
+          <p role="status" className="mb-5 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
+            {getLogoutMessage()}
+          </p>
+        )}
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5">
           <Input
             id="email"

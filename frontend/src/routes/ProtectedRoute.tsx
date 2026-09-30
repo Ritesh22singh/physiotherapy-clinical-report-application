@@ -1,4 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
+import { useSyncExternalStore } from "react";
+import { getSessionToken, subscribeToSession } from "../services/session";
 
 interface ProtectedRouteProps {
 	children: React.ReactNode;
@@ -6,7 +8,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 	const location = useLocation();
-	const token = localStorage.getItem("auth_token");
+	const token = useSyncExternalStore(subscribeToSession, getSessionToken);
 
 	if (!token) {
 		return <Navigate to="/login" replace state={{ from: location }} />;

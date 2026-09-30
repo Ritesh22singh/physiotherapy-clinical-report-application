@@ -1,0 +1,8 @@
+# Local environment settings (applies to frontend and backend)
+.env
+.env.*
+!.env.example
+
+# Installed dependencies and generated builds
+node_modules/
+dist/
